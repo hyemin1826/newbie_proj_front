@@ -1,0 +1,1 @@
+export default()=>"Welcome to Habit Diary Main Page";
