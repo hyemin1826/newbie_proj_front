@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-//import '../App.css';
+import '../App.css';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import {Redirect} from 'react-router-dom';
 import Header from "./Header";
@@ -9,12 +9,15 @@ import Board from "../Screens/Board";
 
 
 class App extends Component{
-    state={ username:"ju", isValid:1, habit:{1:{"name":"eat_apple", "record":[["2020.11.16","Thu", 1],["2020.11.15", "Wed", 0]]}}}
-
+    state={ }
     componentDidMount(){
         fetch('/login')
         .then(res=>res.json)
         .then(users => this.setState({users}));
+    }
+
+    Save=(info)=>{
+        this.setState({'username':info.username, 'isLogin':info.isLogin, 'habit':info.habit});
     }
 
     render(){
@@ -24,11 +27,11 @@ class App extends Component{
                 !Habit Maker!
                 <Router>
                     <Header />
-                    <Route path="/login" render={()=>< Login login_process={(login_info)=>{        
+                    <Route path="/login" render={()=>< Login  login_process={(login_info)=>{        
                         //console.log("start to fetch!");
                             console.log(JSON.stringify(login_info));
-                            fetch('http://localhost:8000/login',{
-                            method:"post",
+                            fetch('/login',{
+                            method:"POST",
                             headers:{
                                 "Content-Type": "application/json; charset=utf-8"
                             },
@@ -37,18 +40,44 @@ class App extends Component{
                             })
                             .then(res=>res.json())
                             .then(user=>{
-                                if(user.isValid){//username, isValid, habit 만!!
-                                    this.setState({users:user.username, isValid:1, habit:user.habit});
+                                console.log(user);
+                                /*
+                                if(user.isLogin){//username, isValid, habit 만!!
+                                    console.log("success to login");
+                                    this.setState({users:user.username, isLogin:1, habit:user.habit});
                                     return (<Redirect to={{pathname:'/', state:this.state}}/>);
                                 }
                                 else{
-                                    this.setState({isValid:0});
+                                    this.setState({iLogin:0});
                                     alert('fail to login');
                                     return (<Redirect to={{pathname:'/login', state:this.state}}/>);
                                 }
+                                */
+                               this.Save(user);
                             })
                         }}/>}/> 
-                    <Route path="/register" component={Register} />
+                    <Route path="/register" render={()=>< Register register_process={(register_info)=>{        
+                            console.log("start to fetch!");
+                            fetch('/register',{
+                            method:"post",
+                            headers:{
+                                "Content-Type": "application/json; charset=utf-8"
+                            },
+                            credentials:"same-origin",
+                            body:JSON.stringify(register_info)
+                            })
+                            .then(res=>res.json())
+                            .then(data=>{
+                                if(data.isValid){//register 성공!
+                                    console.log(data);
+                                    return (<Redirect path='/login' Component={Login}/>);
+                                }
+                                else{
+                                    alert('fail to login');
+                                    //return (<Redirect to={{pathname:'/register', state:this.state}}/>);
+                                }
+                            })
+                        }}/>}/> 
                     <Route path="/board" render={()=><Board state={this.state} />}/>
                 </Router>    
             </div>

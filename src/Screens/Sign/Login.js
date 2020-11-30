@@ -10,7 +10,7 @@ class Login extends Component{
     submitHandler=(event)=>{
         event.preventDefault();
         console.log("hello~~")
-        console.log(event.target.username.value, event.target.password.value)
+        //console.log(event.target.username.value, event.target.password.value)
         
         this.props.login_process({
             username:event.target.username.value,

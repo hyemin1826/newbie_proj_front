@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 const day_list=["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-var habit_list;
-var today=new Date();
-var today_day, today_date, yesterday_day;
+//var today=new Date();
 
 class Board extends Component{
     habit_list=this.props.state.habit;//[1:{'name':eat_apple, 'record':[(2020.2.2, Tue, 1),..., (2019.1.1, Wed, 0)}}]
+    //habit_list={}
     state={
         username:this.props.state.username,
         total:Object.keys(this.habit_list).length,
         board:this.habit_list
     }
 
-    today_day=day_list[today.getDay()]; //string 
-    today_date=today.toLocaleDateString(); //오늘 연도.월.날짜
-    yesterday_day=day_list[today.getDay()-1]; //string
+    today=new Date();
+    today_day=day_list[this.today.getDay()]; //string 
+    today_date=this.today.toLocaleDateString(); //오늘 연도.월.날짜
+    yesterday_day=day_list[this.today.getDay()-1]; //string
 
-    handleSaveData=(data)=>{ //data={'name':~}, board:{1:{name, record}, 2:{name, record}}
-        var total=this.state.total++;
+    handleSaveData=(data)=>{ //data={'habit':~}, board:{1:{name, record}, 2:{name, record}}
+        var total=(this.state.total)+1;
         var new_board=this.state.board;
-        new_board[total]={'name':data.habit, 'record':[[today_date, today_day, 0], ["","",0]]}
+        new_board[total]={'name':data.habit, 'record':[[this.today_date, this.today_day, 0], ["","",0]]}
         
         this.setState({
             board:new_board,
-            total:this.state.total++
+            total:(this.state.total)+1
         });
 
         console.log(this.state);
@@ -32,6 +32,7 @@ class Board extends Component{
     checkUpdate=(data)=>{ //data={index, check, today/yesterday}
         console.log(this.habit_list[data.index]);
         if (data.today){
+            console.log("today update");
             this.habit_list[data.index]['record'][0][2]=data.check;   
         }
         else{
@@ -44,7 +45,8 @@ class Board extends Component{
     }
 
     sendData=()=>{
-        fetch('http://localhost:8000/board',{
+        console.log(this.state);
+        fetch('/board',{
             method:"post",
             headers:{
                 "Content-Type": "application/json; charset=utf-8"
@@ -52,10 +54,13 @@ class Board extends Component{
             credentials:"same-origin",
             body:JSON.stringify(this.state),
         }).then(res=>res.json())
-            
+        .then(data=>{
+            console.log(data);
+            this.setState({username:data.username, total:data.total, board:data.board})})
     }
 
     render(){
+        console.log(this.state);
         const board=this.state.board; //{1:{name, record}. 2:...}
         //Object.keys(board).map(key=>console.log(key));
         return(
@@ -94,7 +99,7 @@ class AddItem extends Component{
     }
 
     handleSubmit=(event)=>{
-        console.log("you click '제출'");
+        //console.log("you click '제출'");
         console.log(this.state);
         event.preventDefault();
         if (this.state){ //not empty habit
@@ -143,12 +148,12 @@ class BoardItem extends Component{ //함수로 checkUpdate 받음
 }
 
 class SaveAll extends Component{
-
     handleSubmit=(event)=>{
-
+        event.preventDefault();
+        this.props.SendData();
     }
-
     render(){
+        console.log("SaveAll component");
         return(
             <form onSubmit={this.handleSubmit}>
                 <div><br></br></div>
