@@ -7,6 +7,11 @@ import Login from "../Screens/Sign/Login";
 import Register from "../Screens/Sign/Register";
 import Board from "../Screens/Board";
 
+const mainStyle={
+    color:"#695956",
+    fontWeight:"bold", 
+    fontSize:40
+}
 
 class App extends Component{
     state={ }
@@ -24,7 +29,7 @@ class App extends Component{
         //console.log(this.state.habit[0]['record']);
         return (
             <div className="App">
-                !Habit Maker!
+                <div style={mainStyle}>Habit Maker</div>
                 <Router>
                     <Header />
                     <Route path="/login" render={()=>< Login  login_process={(login_info)=>{        
@@ -54,6 +59,7 @@ class App extends Component{
                                 }
                                 */
                                this.Save(user);
+                               return <Redirect to={Board} />
                             })
                         }}/>}/> 
                     <Route path="/register" render={()=>< Register register_process={(register_info)=>{        

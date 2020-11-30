@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 const day_list=["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 //var today=new Date();
 
+const board_style={
+    width:"400px",
+    height:"200px",
+    marginLeft:"auto",
+    marginRight:"auto"
+}
+
+
 class Board extends Component{
     habit_list=this.props.state.habit;//[1:{'name':eat_apple, 'record':[(2020.2.2, Tue, 1),..., (2019.1.1, Wed, 0)}}]
     //habit_list={}
@@ -64,8 +72,8 @@ class Board extends Component{
         const board=this.state.board; //{1:{name, record}. 2:...}
         //Object.keys(board).map(key=>console.log(key));
         return(
-            <div>
-                <table border="1">
+            <div >
+                <table border="1" style={board_style}>
                     <tbody>
                         <tr align="center">
                             <td width="50">#</td>
